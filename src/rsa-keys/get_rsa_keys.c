@@ -8,7 +8,7 @@ struct rsa_priv_keys get_rsa_priv_keys() {
   rsa_fp = fopen("keys/rsa","r");
 
   if (rsa_fp == NULL) {
-    printf("Cannot find your private RSA key. Before you try to decipher any ciphertext directed at you, make sure you have generated a pair of RSA keys, and that the 'rsa' file stays in the same directory as the C executable.\n");
+    printf("Cannot find your private RSA key. Before you try to decipher any ciphertext directed at you, make sure you have generated a pair of RSA keys, and that the 'rsa' file stays under the 'exec/keys/' directory.\n");
     exit (1);
   }
 
