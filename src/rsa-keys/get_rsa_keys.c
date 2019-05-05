@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "rsa-keys.h"
+#include <gmp.h>
 #include "../io-utils/io-utils.h"
 
-struct rsa_priv_keys get_rsa_priv_keys() {
+void get_rsa_priv_keys(mpz_t d, mpz_t N)
+{
   FILE *rsa_fp;
   rsa_fp = fopen("keys/rsa","r");
 
@@ -12,17 +13,14 @@ struct rsa_priv_keys get_rsa_priv_keys() {
     exit (1);
   }
 
-  struct rsa_priv_keys rsa_priv_keys;
-
-  read_lli(&rsa_priv_keys.d, rsa_fp);
-  read_lli(&rsa_priv_keys.N, rsa_fp);
+  read_gmp_z(d, rsa_fp);
+  read_gmp_z(N, rsa_fp);
 
   fclose(rsa_fp);
-
-  return rsa_priv_keys;
 }
 
-struct rsa_pub_keys get_rsa_pub_keys() {
+void get_rsa_pub_keys(mpz_t e, mpz_t N)
+{
   FILE *rsa_pub_fp;
   char foreign_rsa_pub_filename[255];
   printf("Enter the path to the 'rsa.pub' file of the person you wish to send a message to: \n");
@@ -38,12 +36,8 @@ struct rsa_pub_keys get_rsa_pub_keys() {
     rsa_pub_fp = fopen(foreign_rsa_pub_filename,"r");
   }
 
-  struct rsa_pub_keys rsa_pub_keys;
-
-  read_lli(&rsa_pub_keys.e, rsa_pub_fp);
-  read_lli(&rsa_pub_keys.N, rsa_pub_fp);
+  read_gmp_z(e, rsa_pub_fp);
+  read_gmp_z(N, rsa_pub_fp);
 
   fclose(rsa_pub_fp);
-
-  return rsa_pub_keys;
 }

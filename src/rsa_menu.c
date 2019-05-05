@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <gmp.h>
 #include "rsa.h"
 #include "./io-utils/io-utils.h"
 #include "./rsa-keys/rsa-keys.h"
@@ -52,11 +53,54 @@ int main () {
   printf("\n");
 
   int user_choice = get_user_choice();
+
   switch (user_choice) {
     case 1:
-      save_rsa_keys();
-      printf("Successfully generated RSA keys.\n");
-      break;
+      {
+        mpz_t e;
+        mpz_t d;
+        mpz_t N;
+
+        mpz_init(e);
+        mpz_init(d);
+        mpz_init(N);
+
+        // The key size of N
+        unsigned long int rsa_key_bit_size;
+
+        printf("\nSelect a key bit size:\n\n");
+        printf("1. 1024 (not suggested)\n");
+        printf("2. 2048\n");
+        printf("3. 4096\n");
+        printf("\n");
+
+        user_choice = get_user_choice();
+
+        switch (user_choice) {
+          case 1:
+            rsa_key_bit_size = 1024;
+            break;
+          case 2:
+            rsa_key_bit_size = 2048;
+            break;
+          case 3:
+            rsa_key_bit_size = 4096;
+            break;
+          default:
+            break;
+        }
+
+        gen_rsa_keys(e, d, N, rsa_key_bit_size);
+        save_rsa_keys(e, d, N);
+
+        // Garbage collection
+        mpz_clear(e);
+        mpz_clear(d);
+        mpz_clear(N);
+
+        printf("Successfully generated RSA keys.\n");
+        break;
+      }
     case 2:
       rsa_encipher();
       printf("Successfully enciphered the plain text specified.\n");

@@ -1,56 +1,85 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include "rsa-keys.h"
-#include "../io-utils/io-utils.h"
-#include "../math-utils/math-utils.h"
+#include <gmp.h>
+#include "../rand-num-utils/rand-num-utils.h"
 
-struct rsa_keys gen_rsa_keys () {
+void gen_rsa_keys(mpz_t e, mpz_t d, mpz_t N, unsigned long int rsa_key_bit_size)
+{
+  // Initialize random number
+	mpz_t rand_num;
+	mpz_init(rand_num);
 
-  struct rsa_keys rsa_keys;
+  mp_bitcnt_t bit_size = (mp_bitcnt_t) rsa_key_bit_size;
 
-  long int first_prime, second_prime, p, q;
+  // Initialize key_upper_bound = 1
+  mpz_t key_upper_bound;
+  mpz_init(key_upper_bound);
+  mpz_set_ui(key_upper_bound, 1);
 
-  do {
+  // key_upper_bound = key_upper_bound * 2^(bit_size)
+  mpz_mul_2exp(key_upper_bound, key_upper_bound, bit_size);
 
-    first_prime = gen_prime();
-    second_prime = gen_prime();
+  gen_random_number(rand_num, rsa_key_bit_size);
 
-    if (first_prime > second_prime) {
-      p = first_prime;
-      q = second_prime;
-    } else if (first_prime < second_prime) {
-      p = second_prime;
-      q = first_prime;
-    }
-  } while (first_prime == second_prime);
+  mpz_t rand_num_quot;
+  mpz_init(rand_num_quot);
 
-  long long int N = ((long long int) p) * ((long long int) q);
+  // Calculate the quotient in the division
+  mpz_tdiv_q(rand_num_quot, key_upper_bound, rand_num);
 
-  long long int euler_totient = ((long long int) (p - 1)) * ((long long int) (q - 1));
-  long long int euler_totient_coeff;
+  mpz_t p;
+  mpz_t q;
+	mpz_t p_less_1;
+	mpz_t q_less_1;
 
-  long long int e, d, gcd;
+  mpz_init(p);
+  mpz_init(q);
+	mpz_init(p_less_1);
+	mpz_init(q_less_1);
 
-  int exit_status_code_EEA;
+  mpz_nextprime(p, rand_num);
+  mpz_nextprime(q, rand_num_quot);
+	mpz_sub_ui(p_less_1, p, 1);
+	mpz_sub_ui(q_less_1, q, 1);
 
-  do {
+	mpz_t euler_totient;
+	mpz_t euler_totient_coeff;
+	mpz_t gcd;
 
-    do {
+	mpz_init(euler_totient);
+	mpz_init(euler_totient_coeff);
+	mpz_init(gcd);
 
-      e = (long long int) gen_prime();
-    } while (e >= euler_totient);
+	mpz_mul(N, p, q);
+	mpz_mul(euler_totient, p_less_1, q_less_1);
 
-    exit_status_code_EEA = ext_eucl_alg_lli(euler_totient, e, &gcd, &euler_totient_coeff, &d);
-  } while (exit_status_code_EEA != 0 || gcd != 1);
+	do {
+		do {
 
-  if (d < 0) {
-    d = d + euler_totient;
-  }
+			gen_random_number(e, rsa_key_bit_size);
+			mpz_nextprime(e, e);
+		} while (mpz_cmp(e, euler_totient) >= 0);
 
-  rsa_keys.N = N;
-  rsa_keys.e = e;
-  rsa_keys.d = d;
+		// gcd = euler_totient*euler_totient_coeff + e*d
+		mpz_gcdext(gcd, euler_totient_coeff, d, euler_totient, e);
+	} while (mpz_cmp_ui(gcd, 1) != 0);
 
-  return rsa_keys;
+  // Get d's equivalence class in the ring of the Totient mod
+	if (mpz_cmp_ui(d, 0) < 0) {
+		mpz_add(d, d, euler_totient);
+	}
+
+  // Garbage collection
+  mpz_clear(rand_num);
+  mpz_clear(rand_num_quot);
+  mpz_clear(key_upper_bound);
+
+  mpz_clear(p);
+  mpz_clear(q);
+  mpz_clear(p_less_1);
+  mpz_clear(q_less_1);
+
+  mpz_clear(euler_totient);
+  mpz_clear(euler_totient_coeff);
+  mpz_clear(gcd);
 }
