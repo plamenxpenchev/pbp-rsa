@@ -3,6 +3,8 @@
 
 ## Table of Contents
 - [Implementation](#implementation)
+- [Docker setup](#docker-setup)
+- [Usage](#usage)
 - [License](#license)
 
 ## Implementation
@@ -11,7 +13,6 @@
 Multiple Precision Arithmetic Library*) for arbitrary precision arithmetic, in order to go beyond the supported C data types.
   - In the first version of version of pbp-rsa, primes generated were restricted to the 4th root of C's long long. In this way, exponentiation modulo N could reach at most the upper bound of the long long data type.
   - For proper security with PK cryptography, RSA in particular, key sizes of a much larger magnitude are necessary, as opposed to symmetric crypto algorithms. Hence the need for arbitrary precision arithmetic.
-
 
 - **RSA key generation**
   - Prime generation of `p` and `q`.
@@ -29,17 +30,17 @@ Multiple Precision Arithmetic Library*) for arbitrary precision arithmetic, in o
       - In the case `d` is negative, its equivalence class in the ring of the Totient is used.
     - `N` is `p` times `q`.
 
+## Docker setup
+- Run `bash docker-build.sh` to build the GCC docker image, configuring and installing the GMP and BSD libraries and setting up the project executable.
+- Run `bash docker-run.sh` to run the project executable docker container.
+- Alternatively, to compile and run locally:
+  - Needed libraries: GMP, BSD.
+  - GCC: `` gcc src/*.c src/*/*.c -o exec/pbp-rsa -lbsd -lm -lgmp `pkg-config --libs libbsd` `` from the project root.
 
-- **Project compilation**
-  - Configure and install GMP.
-  - To compile the project, execute `` gcc -lbsd -o ../exec/rsa-cipher *.c */*.c -lm -lgmp `pkg-config --libs libbsd` `` inside the `src` directory.
-
-
-- **Usage**
-  - Generate a pair of RSA public and private keys (`rsa.pub` and `rsa` respectively, found under `/exec/keys/`).
-  - Share `rsa.pub` with a friend.
-  - Text files produced will be stored under `/exec/text-files`.
-  - Encipher and decipher at will :)
+## Usage
+- Generate a pair of RSA public and private keys (`rsa.pub` and `rsa` respectively, found under `/exec/keys/`).
+- Share `rsa.pub` with a friend.
+- Text files produced will be stored under `/exec/text-files`.
 
 ## License
 This project is licensed under the [Apache License](LICENSE).
