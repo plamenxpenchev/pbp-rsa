@@ -7,8 +7,8 @@ void save_rsa_keys(mpz_t e, mpz_t d, mpz_t N) {
 	FILE* rsa_pub;
 	FILE* rsa;
 
-	rsa_pub = fopen("keys/rsa.pub", "w");
-	rsa = fopen("keys/rsa", "w");
+	rsa_pub = fopen("exec/keys/rsa.pub", "w");
+	rsa = fopen("exec/keys/rsa", "w");
 
 	char* key;
 
