@@ -1,5 +1,5 @@
 # pbp-rsa
-**pbp-rsa (Pretty Bad Privacy)** is a project, which handles RSA key generation (1024, 2048, and 4096 bit sizes), plaintext files encryption and decryption.
+**pbp-rsa (Pretty Bad Privacy)** is a project, which handles RSA key generation (1024, 2048, and 4096 bit sizes), plaintext files encryption and decryption. This is a playground crypto project, so I do not recommend using it for any serious crypto purposes. If you need something like that, I would direct you to PQC - consider Kyber and its alternatives.
 
 ## Table of Contents
 - [Implementation](#implementation)
@@ -36,10 +36,11 @@ Multiple Precision Arithmetic Library*) for arbitrary precision arithmetic, in o
 - Alternatively, to compile and run locally:
   - Needed libraries: GMP, BSD.
   - GCC: `` gcc src/*.c src/*/*.c -o exec/pbp-rsa -lbsd -lm -lgmp `pkg-config --libs libbsd` `` from the project root.
+  - Run `` ./exec/pbp-rsa `` from the project root.
 
 ## Usage
 - Generate a pair of RSA public and private keys (`rsa.pub` and `rsa` respectively, found under `/exec/keys/`).
-- Share `rsa.pub` with a friend.
+- Share `rsa.pub` with a friend. 
 - Text files produced will be stored under `/exec/text-files`.
 
 ## License

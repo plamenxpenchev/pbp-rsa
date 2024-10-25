@@ -6,7 +6,7 @@
 void get_rsa_priv_keys(mpz_t d, mpz_t N) {
 
 	FILE* rsa_fp;
-	rsa_fp = fopen("keys/rsa", "r");
+	rsa_fp = fopen("exec/keys/rsa", "r");
 
 	if (rsa_fp == NULL) {
 		printf("Cannot find your private RSA key. Before you try to decipher any ciphertext directed at you, make sure you have generated a pair of RSA keys, and that the 'rsa' file stays under the 'exec/keys/' directory.\n");

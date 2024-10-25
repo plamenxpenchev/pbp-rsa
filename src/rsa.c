@@ -34,7 +34,7 @@ int rsa_encipher() {
 	FILE* cipher_fp;
 
 	plain_fp = get_file_to_encrypt();
-	cipher_fp = fopen("text-files/cipher_text.txt", "w");
+	cipher_fp = fopen("exec/text-files/cipher_text.txt", "w");
 
 	printf("\nEncipher start...\n");
 
@@ -89,7 +89,7 @@ int rsa_decipher() {
 	FILE* decipher_fp;
 
 	cipher_fp = get_file_to_decrypt();
-	decipher_fp = fopen("text-files/deciphered_text.txt", "w");
+	decipher_fp = fopen("exec/text-files/deciphered_text.txt", "w");
 
 	int read_gmp_z_exit_code;
 
