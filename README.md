@@ -5,6 +5,7 @@
 - [Implementation](#implementation)
 - [Docker setup](#docker-setup)
 - [Usage](#usage)
+- [Alice and Bob](#alice-and-bob)
 - [License](#license)
 
 ## Implementation
@@ -42,6 +43,37 @@ Multiple Precision Arithmetic Library*) for arbitrary precision arithmetic, in o
 - Generate a pair of RSA public and private keys (`rsa.pub` and `rsa` respectively, found under `/exec/keys/`).
 - Share `rsa.pub` with a friend. 
 - Text files produced will be stored under `/exec/text-files`.
+
+## Alice and Bob
+
+### Key creation and key exchange
+
+- `bash docker-run.sh bob`
+- (Bob) Pick menu option 1 (`Generate RSA key pair`), then option 3 (`4096 bit size`)
+- `docker cp pbp-rsa-bob://usr/src/pbp-rsa/exec/keys/rsa.pub ./bob.pub`
+
+- `bash docker-run.sh alice`
+- (Alice) Pick menu option 1 (`Generate RSA key pair`), then option 3 (`4096 bit size`)
+- `docker cp ./bob.pub pbp-rsa-alice://usr/src/pbp-rsa/exec/keys/`
+
+### Message creation and encryption
+
+- `docker exec -it pbp-rsa-alice bash -c "echo Hello Bob! >> /usr/src/pbp-rsa/exec/text-files/plaintext_message.txt"`
+- (Alice) Pick menu option 2 (`Encipher text file`)
+- (Alice) When prompted with `Enter the path to the 'rsa.pub' file of the person you wish to send a message to` enter:
+  - `/usr/src/pbp-rsa/exec/keys/bob.pub`
+- (Alice) When prompted with `Enter the path to the file you wish to encrypt` enter:
+  - `/usr/src/pbp-rsa/exec/text-files/plaintext_message.txt`
+
+### Message transfer and decryption
+
+- `docker cp pbp-rsa-alice://usr/src/pbp-rsa/exec/text-files/cipher_text.txt ./encrypted_message.txt`
+- `docker cp ./encrypted_message.txt pbp-rsa-bob://usr/src/pbp-rsa/exec/text-files/`
+- (Bob) Pick menu option 3 (`Decipher text file`)
+- (Bob) When prompted with `Enter the path to the file you wish to decrypt` enter:
+  - `/usr/src/pbp-rsa/exec/text-files/encrypted_message.txt`
+- The `Hello Bob!` message will be printed.
+
 
 ## License
 This project is licensed under the [Apache License](LICENSE).
